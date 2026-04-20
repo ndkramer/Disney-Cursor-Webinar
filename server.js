@@ -31,7 +31,7 @@ const { extractActionItems } = require("./extract.js");
 const { notifySlackForPriority1 } = require("./notify.js");
 
 const PROJECT_ROOT = __dirname;
-const TRANSCRIPTS_DIR = path.join(PROJECT_ROOT, "Transcripts");
+const TRANSCRIPTS_DIR = path.join(PROJECT_ROOT, "transcripts");
 const PORT = Number(process.env.PORT) || 5174;
 const ALLOWED_TRANSCRIPT_EXT = new Set([".md", ".txt"]);
 
@@ -43,7 +43,7 @@ app.use(express.json({ limit: "1mb" }));
 // because everything under /api/* is registered below.
 app.use(express.static(PROJECT_ROOT, { extensions: ["html"] }));
 
-/** Reject any filename that tries to escape Transcripts/ or has the wrong extension. */
+/** Reject any filename that tries to escape transcripts/ or has the wrong extension. */
 function safeTranscriptName(name) {
   if (typeof name !== "string" || !name) return null;
   const base = path.basename(name);
@@ -63,7 +63,7 @@ app.get("/api/transcripts", (_req, res) => {
     }
     const transcripts = entries
       .filter((e) => e.isFile() && ALLOWED_TRANSCRIPT_EXT.has(path.extname(e.name).toLowerCase()))
-      .map((e) => ({ name: e.name, path: `Transcripts/${e.name}` }))
+      .map((e) => ({ name: e.name, path: `transcripts/${e.name}` }))
       .sort((a, b) => a.name.localeCompare(b.name));
     res.json({ transcripts });
   });
