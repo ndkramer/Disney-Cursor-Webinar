@@ -132,6 +132,150 @@ body {
   outline-offset: 2px;
 }
 
+/* Transcript automation panel (Session 3, Step 6).
+   Collapsible <details> sitting between the add-card form and the board. */
+.transcript-panel {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.transcript-panel__summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 12px;
+  user-select: none;
+}
+
+.transcript-panel__summary::-webkit-details-marker {
+  display: none;
+}
+
+.transcript-panel__summary::before {
+  content: "▸";
+  display: inline-block;
+  width: 1.1rem;
+  color: var(--muted);
+  transition: transform 120ms ease;
+}
+
+.transcript-panel[open] .transcript-panel__summary::before {
+  transform: rotate(90deg);
+}
+
+.transcript-panel__body {
+  padding: 0 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transcript-panel__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.transcript-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.transcript-panel__row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.transcript-panel__row select {
+  flex: 1;
+  min-width: 12rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.transcript-panel textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+  min-height: 8rem;
+}
+
+.transcript-panel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.transcript-panel__status {
+  font-size: 0.85rem;
+  color: var(--muted);
+  flex: 1;
+  min-width: 0;
+}
+
+.transcript-panel__status[data-kind="success"] {
+  color: var(--complete);
+}
+
+.transcript-panel__status[data-kind="error"] {
+  color: #b91c1c;
+}
+
+.transcript-panel__btn {
+  padding: 0.5rem 0.95rem;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.transcript-panel__btn--primary {
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.transcript-panel__btn--primary:hover {
+  background-color: #1d4ed8;
+}
+
+.transcript-panel__btn--primary:disabled {
+  background-color: #93c5fd;
+  cursor: progress;
+}
+
+.transcript-panel__btn--secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.transcript-panel__btn--secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* Board layout: three columns side by side, collapsing on narrow screens. */
 .board {
   display: grid;

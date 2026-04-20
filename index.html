@@ -29,6 +29,42 @@
         <button type="submit">Add card</button>
       </form>
 
+      <details class="transcript-panel" id="transcript-panel">
+        <summary class="transcript-panel__summary">Process transcript</summary>
+        <div class="transcript-panel__body">
+          <p class="transcript-panel__hint">
+            Pick a sample meeting transcript or paste your own. The server will extract action items,
+            assign a priority (1 = red, 2 = yellow, 3 = green), route each one to the correct column,
+            and add them to the board.
+          </p>
+
+          <div class="transcript-panel__row">
+            <label for="transcript-picker">Sample transcript</label>
+            <select id="transcript-picker" name="transcript-picker">
+              <option value="">Loading…</option>
+            </select>
+            <button type="button" id="transcript-load" class="transcript-panel__btn transcript-panel__btn--secondary">
+              Load
+            </button>
+          </div>
+
+          <label class="sr-only" for="transcript-text">Transcript text</label>
+          <textarea
+            id="transcript-text"
+            name="transcript-text"
+            rows="10"
+            placeholder="Paste a meeting transcript here…"
+          ></textarea>
+
+          <div class="transcript-panel__actions">
+            <span class="transcript-panel__status" id="transcript-status" role="status" aria-live="polite"></span>
+            <button type="button" id="transcript-run" class="transcript-panel__btn transcript-panel__btn--primary">
+              Run automation
+            </button>
+          </div>
+        </div>
+      </details>
+
       <section class="board" aria-label="Kanban board">
         <section class="board__column" data-column="todo" aria-labelledby="col-todo-heading">
           <header class="board__column-header">

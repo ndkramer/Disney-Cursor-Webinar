@@ -4,6 +4,11 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "envFile": "${workspaceFolder}/.env"
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "envFile": "${workspaceFolder}/.env"
     }
   }
 }

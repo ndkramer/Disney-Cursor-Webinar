@@ -54,6 +54,14 @@
   const input = document.getElementById("task-input");
   const resetBtn = document.getElementById("reset-board");
 
+  // Transcript panel (added in Session 3, Step 6).
+  const transcriptPanel = document.getElementById("transcript-panel");
+  const transcriptPicker = document.getElementById("transcript-picker");
+  const transcriptLoadBtn = document.getElementById("transcript-load");
+  const transcriptText = document.getElementById("transcript-text");
+  const transcriptRunBtn = document.getElementById("transcript-run");
+  const transcriptStatus = document.getElementById("transcript-status");
+
   /** @type {Record<Column, HTMLUListElement>} */
   const listEls = {
     todo: document.querySelector('[data-column-list="todo"]'),
@@ -368,6 +376,137 @@
     persist();
     render();
   });
+
+  // ------- Transcript automation (Session 3, Step 6) -------
+
+  /**
+   * Set the small status line under the textarea. Pass `kind` to color it:
+   * "info" (default), "success", or "error".
+   */
+  function setTranscriptStatus(message, kind = "info") {
+    if (!transcriptStatus) return;
+    transcriptStatus.textContent = message || "";
+    transcriptStatus.dataset.kind = kind;
+  }
+
+  /** Populate the sample-transcript dropdown from GET /api/transcripts. */
+  async function loadTranscriptList() {
+    if (!transcriptPicker) return;
+    try {
+      const res = await fetch("/api/transcripts", { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      const list = Array.isArray(data?.transcripts) ? data.transcripts : [];
+      transcriptPicker.replaceChildren();
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = list.length ? "Choose a sample…" : "No samples found";
+      transcriptPicker.appendChild(placeholder);
+      list.forEach((t) => {
+        const opt = document.createElement("option");
+        opt.value = t.name;
+        opt.textContent = t.name;
+        transcriptPicker.appendChild(opt);
+      });
+    } catch (err) {
+      // Likely opened off file:// without the server running. Hide the picker
+      // gracefully so the textarea still works for paste-only flow.
+      transcriptPicker.replaceChildren();
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "Server offline — paste transcript below";
+      transcriptPicker.appendChild(opt);
+      transcriptPicker.disabled = true;
+      if (transcriptLoadBtn) transcriptLoadBtn.disabled = true;
+    }
+  }
+
+  /** Fetch the selected sample transcript and drop it into the textarea. */
+  async function handleTranscriptLoad() {
+    if (!transcriptPicker || !transcriptText) return;
+    const name = transcriptPicker.value;
+    if (!name) {
+      setTranscriptStatus("Pick a sample transcript first.", "error");
+      return;
+    }
+    setTranscriptStatus("Loading " + name + "…");
+    try {
+      const res = await fetch("/api/transcripts/" + encodeURIComponent(name), { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      transcriptText.value = await res.text();
+      setTranscriptStatus("Loaded " + name + ". Click Run automation to extract cards.", "success");
+    } catch (err) {
+      setTranscriptStatus("Could not load " + name + ": " + (err?.message || err), "error");
+    }
+  }
+
+  /**
+   * POST the transcript text to the server, merge the returned cards into the
+   * in-memory state (same persistence path as the add-card form), and re-render.
+   * cards.json is intentionally not modified — see server.js for why.
+   */
+  async function handleTranscriptRun() {
+    if (!transcriptText) return;
+    const text = transcriptText.value.trim();
+    if (!text) {
+      setTranscriptStatus("Paste a transcript or load a sample first.", "error");
+      return;
+    }
+    if (transcriptRunBtn) transcriptRunBtn.disabled = true;
+    setTranscriptStatus("Extracting action items…");
+    try {
+      const res = await fetch("/api/process-transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: text }),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error || "HTTP " + res.status);
+      }
+      const data = await res.json();
+      const newCards = Array.isArray(data?.cards) ? data.cards.map(normalizeCard) : [];
+      if (!newCards.length) {
+        setTranscriptStatus("No action items detected. Try a different transcript.", "error");
+        return;
+      }
+      cards.push(...newCards);
+      persist();
+      render();
+
+      // Build a status line that also reports Slack outcomes for Priority 1 cards.
+      const cardsMsg =
+        "Added " + newCards.length + " card" + (newCards.length === 1 ? "" : "s") + " to the board.";
+      const notified = Array.isArray(data?.notified) ? data.notified : [];
+      const sentOk = notified.filter((n) => n?.ok).length;
+      const sentFail = notified.length - sentOk;
+      let slackMsg = "";
+      if (data?.slackSkipped) {
+        slackMsg = " Slack notifications skipped: " + (data.slackSkipReason || "missing config") + ".";
+      } else if (notified.length > 0) {
+        slackMsg = " Slack: " + sentOk + " Priority 1 alert" + (sentOk === 1 ? "" : "s") + " sent" +
+          (sentFail ? ", " + sentFail + " failed" : "") + ".";
+      }
+      setTranscriptStatus(cardsMsg + slackMsg, sentFail ? "error" : "success");
+    } catch (err) {
+      setTranscriptStatus("Run failed: " + (err?.message || err), "error");
+    } finally {
+      if (transcriptRunBtn) transcriptRunBtn.disabled = false;
+    }
+  }
+
+  if (transcriptLoadBtn) transcriptLoadBtn.addEventListener("click", handleTranscriptLoad);
+  if (transcriptRunBtn) transcriptRunBtn.addEventListener("click", handleTranscriptRun);
+  // Auto-fetch the sample list once the panel is opened (first time only).
+  if (transcriptPanel) {
+    transcriptPanel.addEventListener(
+      "toggle",
+      () => {
+        if (transcriptPanel.open) loadTranscriptList();
+      },
+      { once: true }
+    );
+  }
 
   // ------- Reset board -------
 
