@@ -1,0 +1,11 @@
+# Local secrets (if you add a project .env later)
+.env
+.env.local
+
+# Microsoft Word lock files
+~$*.docx
+
+# Dependencies and build artifacts (common for Node/web apps)
+node_modules/
+dist/
+build/
