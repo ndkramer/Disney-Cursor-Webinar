@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task List</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <h1>Task List</h1>
+        <p class="app__subtitle">Add tasks, view them, and mark them complete.</p>
+      </header>
+
+      <form class="task-form" id="task-form" autocomplete="off">
+        <label class="sr-only" for="task-input">New task</label>
+        <input
+          type="text"
+          id="task-input"
+          name="task"
+          placeholder="What do you need to do?"
+          maxlength="500"
+          required
+        />
+        <button type="submit">Add task</button>
+      </form>
+
+      <section class="task-section" aria-labelledby="task-list-heading">
+        <h2 id="task-list-heading" class="task-section__title">Your tasks</h2>
+        <ul class="task-list" id="task-list" role="list"></ul>
+        <p class="task-list__empty" id="task-empty" hidden>No tasks yet. Add one above.</p>
+      </section>
+    </main>
+
+    <dialog class="task-dialog" id="task-details-dialog" aria-labelledby="task-dialog-title">
+      <form class="task-dialog__form" id="task-details-form" novalidate>
+        <h2 class="task-dialog__title" id="task-dialog-title">Task details</h2>
+        <input type="hidden" id="detail-task-id" name="taskId" value="" />
+
+        <div class="task-dialog__field">
+          <label for="detail-due">Due date</label>
+          <input type="date" id="detail-due" name="dueDate" />
+        </div>
+
+        <div class="task-dialog__field">
+          <label for="detail-assignee">Assigned to</label>
+          <input
+            type="text"
+            id="detail-assignee"
+            name="assignedTo"
+            placeholder="Name"
+            maxlength="120"
+            autocomplete="name"
+          />
+        </div>
+
+        <div class="task-dialog__field">
+          <label for="detail-description">Description</label>
+          <textarea
+            id="detail-description"
+            name="description"
+            rows="4"
+            maxlength="2000"
+            placeholder="Notes…"
+          ></textarea>
+        </div>
+
+        <div class="task-dialog__field">
+          <label for="detail-priority">Priority</label>
+          <select id="detail-priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="task-dialog__actions">
+          <button type="button" class="task-dialog__btn task-dialog__btn--secondary" id="detail-cancel">
+            Cancel
+          </button>
+          <button type="submit" class="task-dialog__btn task-dialog__btn--primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
