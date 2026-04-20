@@ -1,0 +1,8 @@
+---
+description: Visual rule for how card priority is color-coded across the app
+alwaysApply: true
+---
+
+# Priority colors
+
+Priority 1 cards are always displayed with a red background. Priority 2 cards are always displayed with a yellow background. Priority 3 cards are always displayed with a green background. These colors must be applied consistently across the entire app.

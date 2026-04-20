@@ -1,0 +1,8 @@
+---
+description: Project context for the task list / Kanban web app
+alwaysApply: true
+---
+
+# Project context
+
+This project is a task list web app built with HTML, CSS, and JavaScript. It allows users to add tasks, mark them complete, and view task details, including Due Date, Assigned To, Description, and Priority. We are upgrading it to a Kanban board with three columns: To Do, In Progress, and Done. Always refer to tasks as cards. Always default new cards to the To Do column.

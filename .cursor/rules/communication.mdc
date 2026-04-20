@@ -1,0 +1,8 @@
+---
+description: Communication rule for how the agent explains and proposes changes
+alwaysApply: true
+---
+
+# Communication
+
+Always explain every change you make in plain English before making it. Always ask for confirmation before making large structural changes. Always suggest three implementation options when adding a new feature and wait for the user to choose one.

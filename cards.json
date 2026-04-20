@@ -1,0 +1,16 @@
+{
+  "$schema": "Seed data for the Kanban board. Consumed by app.js once the Session 2 conversion is complete.",
+  "columns": ["todo", "in-progress", "done"],
+  "cards": [
+    {
+      "id": "60c12586-048e-4825-b773-3bf059d34136",
+      "title": "Update park navigation system",
+      "priority": 1,
+      "assignedTo": "Nick",
+      "dueDate": "2026-04-24",
+      "description": "Update the Park navigation system",
+      "column": "todo",
+      "createdAt": "2026-04-20"
+    }
+  ]
+}

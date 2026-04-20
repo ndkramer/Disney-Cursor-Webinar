@@ -1,4 +1,4 @@
-/* Task list app — Session 1 handout style: simple, readable layout */
+/* Kanban board — Session 2 conversion: three draggable columns. */
 
 *,
 *::before,
@@ -40,13 +40,39 @@ body {
 }
 
 .app {
-  max-width: 36rem;
+  max-width: 72rem;
   margin: 0 auto;
   padding: 2.5rem 1.25rem 3rem;
 }
 
 .app__header {
+  position: relative;
   margin-bottom: 1.75rem;
+}
+
+/* Reset board: pinned to the top-right of the header */
+.app__reset {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.app__reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.app__reset:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .app__header h1 {
@@ -106,31 +132,101 @@ body {
   outline-offset: 2px;
 }
 
-.task-section__title {
-  margin: 0 0 0.75rem;
+/* Board layout: three columns side by side, collapsing on narrow screens. */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 60rem) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.board__column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f3f4f6;
+  min-height: 8rem;
+}
+
+.board__column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.board__column-title {
+  margin: 0;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.board__column-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.4rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--muted);
 }
 
 .task-list {
   list-style: none;
   margin: 0;
-  padding: 0;
-  border: 1px solid var(--border);
+  padding: 0.25rem;
+  border: 1px dashed transparent;
   border-radius: 10px;
-  background: var(--surface);
-  overflow: hidden;
+  background: transparent;
+  min-height: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Visual cue when a card is being dragged over a column. */
+.task-list--drop-target {
+  border-color: var(--accent);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .task-item {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: grab;
+  transition: opacity 120ms ease, box-shadow 120ms ease;
+}
+
+.task-item:active {
+  cursor: grabbing;
+}
+
+.task-item--dragging {
+  opacity: 0.5;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .task-item__middle {
@@ -154,6 +250,25 @@ body {
 
 .task-item__assignee:empty {
   display: none;
+}
+
+/* Whole-card priority backgrounds per .cursor/rules/priority-colors.mdc:
+   1 = red, 2 = yellow, 3 = green. Soft tints chosen so a board full of
+   cards stays readable; border picks up a slightly stronger shade of the
+   same hue so the card edges remain visible against the column. */
+.task-item--priority-1 {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.task-item--priority-2 {
+  background: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.task-item--priority-3 {
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .task-item__details-btn {
@@ -188,10 +303,6 @@ body {
   height: 1.15rem;
 }
 
-.task-item:last-child {
-  border-bottom: none;
-}
-
 .task-item__check {
   margin-top: 0.2rem;
   width: 1.15rem;
@@ -220,12 +331,11 @@ body {
 
 .task-list__empty {
   margin: 0;
-  padding: 1.25rem 1rem;
+  padding: 0.85rem 0.5rem;
   text-align: center;
   color: var(--muted);
-  font-size: 0.95rem;
-  border: 1px dashed var(--border);
-  border-radius: 10px;
+  font-size: 0.85rem;
+  font-style: italic;
 }
 
 .task-list__empty[hidden] {

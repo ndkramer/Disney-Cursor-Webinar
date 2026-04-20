@@ -3,18 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task List</title>
+    <title>Kanban Board</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
       <header class="app__header">
-        <h1>Task List</h1>
-        <p class="app__subtitle">Add tasks, view them, and mark them complete.</p>
+        <h1>Kanban Board</h1>
+        <p class="app__subtitle">Add cards, drag them between columns, mark them done.</p>
+        <button type="button" class="app__reset" id="reset-board" title="Clear localStorage and reseed from cards.json">
+          Reset board
+        </button>
       </header>
 
       <form class="task-form" id="task-form" autocomplete="off">
-        <label class="sr-only" for="task-input">New task</label>
+        <label class="sr-only" for="task-input">New card</label>
         <input
           type="text"
           id="task-input"
@@ -23,19 +26,42 @@
           maxlength="500"
           required
         />
-        <button type="submit">Add task</button>
+        <button type="submit">Add card</button>
       </form>
 
-      <section class="task-section" aria-labelledby="task-list-heading">
-        <h2 id="task-list-heading" class="task-section__title">Your tasks</h2>
-        <ul class="task-list" id="task-list" role="list"></ul>
-        <p class="task-list__empty" id="task-empty" hidden>No tasks yet. Add one above.</p>
+      <section class="board" aria-label="Kanban board">
+        <section class="board__column" data-column="todo" aria-labelledby="col-todo-heading">
+          <header class="board__column-header">
+            <h2 id="col-todo-heading" class="board__column-title">To Do</h2>
+            <span class="board__column-count" data-column-count="todo">0</span>
+          </header>
+          <ul class="task-list" data-column-list="todo" role="list"></ul>
+          <p class="task-list__empty" data-column-empty="todo">No cards in To Do.</p>
+        </section>
+
+        <section class="board__column" data-column="in-progress" aria-labelledby="col-in-progress-heading">
+          <header class="board__column-header">
+            <h2 id="col-in-progress-heading" class="board__column-title">In Progress</h2>
+            <span class="board__column-count" data-column-count="in-progress">0</span>
+          </header>
+          <ul class="task-list" data-column-list="in-progress" role="list"></ul>
+          <p class="task-list__empty" data-column-empty="in-progress">No cards in In Progress.</p>
+        </section>
+
+        <section class="board__column" data-column="done" aria-labelledby="col-done-heading">
+          <header class="board__column-header">
+            <h2 id="col-done-heading" class="board__column-title">Done</h2>
+            <span class="board__column-count" data-column-count="done">0</span>
+          </header>
+          <ul class="task-list" data-column-list="done" role="list"></ul>
+          <p class="task-list__empty" data-column-empty="done">No cards in Done.</p>
+        </section>
       </section>
     </main>
 
     <dialog class="task-dialog" id="task-details-dialog" aria-labelledby="task-dialog-title">
       <form class="task-dialog__form" id="task-details-form" novalidate>
-        <h2 class="task-dialog__title" id="task-dialog-title">Task details</h2>
+        <h2 class="task-dialog__title" id="task-dialog-title">Card details</h2>
         <input type="hidden" id="detail-task-id" name="taskId" value="" />
 
         <div class="task-dialog__field">
@@ -69,9 +95,9 @@
         <div class="task-dialog__field">
           <label for="detail-priority">Priority</label>
           <select id="detail-priority" name="priority">
-            <option value="low">Low</option>
-            <option value="medium" selected>Medium</option>
-            <option value="high">High</option>
+            <option value="1">1 — High (Red)</option>
+            <option value="2" selected>2 — Medium (Yellow)</option>
+            <option value="3">3 — Low (Green)</option>
           </select>
         </div>
 
