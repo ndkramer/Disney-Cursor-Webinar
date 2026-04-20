@@ -163,9 +163,9 @@ before any changes are applied.</p></li>
 
 13. A good starting prompt for this app is something like:
 
-> *"Build me a simple task list web app using HTML, CSS, and JavaScript
-> where I can add tasks, view all my tasks, and mark tasks as
-> complete."*
+    ```text
+    Build me a simple task list web app using HTML, CSS, and JavaScript where I can add tasks, view all my tasks, and mark tasks as complete.
+    ```
 
 14. Press Enter and watch Cursor go to work.
 
