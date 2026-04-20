@@ -1,3 +1,6 @@
+# macOS folder metadata
+.DS_Store
+
 # Local secrets (if you add a project .env later)
 .env
 .env.local
